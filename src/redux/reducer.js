@@ -6,7 +6,30 @@ const intialValue = {
 const rootReducer = (state = intialValue, action) => {
     switch(action.type) {
         case "cart/add":
-            const newCart = [...state.cart, action.payload]
+            const productExist = state.cart.findIndex(item => item.id == action.payload.id)
+
+            let newCart = []
+            console.log(action.payload.id, productExist, state.cart)
+            if (productExist !== -1) {
+                newCart = state.cart.map(item => {
+                    if (item.id === action.payload.id) {
+                        return {
+                            ...item,
+                            count: item.count + 1
+                        }
+                    }
+                    return item
+                })
+                return {
+                    ...state,
+                    cart: newCart,
+                    total: newCart.reduce((accu, item) => accu + item.saleOffPrice, 0)
+                }
+            }
+
+            console.log("first")
+
+            newCart = [...state.cart, action.payload]
             return {
                 ...state,
                 cart: newCart,
